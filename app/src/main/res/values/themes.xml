@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Noteapp" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Use an AppCompat theme as the parent -->
+    <style name="Theme.Noteapp" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here if needed -->
+    </style>
 </resources>
