@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.androidx.navigation.safeargs)
 }
 
 android {
@@ -35,13 +37,17 @@ android {
     }
     buildFeatures {
         compose true
+        viewBinding true
     }
     composeOptions {
         kotlinCompilerExtensionVersion '1.5.1'
     }
     packaging {
-        resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        packagingOptions {
+            resources {
+                excludes += 'META-INF/LICENSE.md'
+                excludes += 'META-INF/LICENSE-notice.md'
+            }
         }
     }
 }
@@ -63,4 +69,27 @@ dependencies {
     androidTestImplementation libs.androidx.ui.test.junit4
     debugImplementation libs.androidx.ui.tooling
     debugImplementation libs.androidx.ui.test.manifest
+
+    implementation libs.androidx.legacy.support.v4
+    implementation libs.androidx.recyclerview
+    implementation libs.androidx.lifecycle.extensions
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.androidx.lifecycle.common.java8
+    implementation libs.androidx.room.runtime
+    implementation libs.androidx.room.ktx
+    ksp libs.androidx.room.compiler
+    implementation libs.kotlinx.coroutines.core
+    implementation libs.kotlinx.coroutines.android
+    implementation libs.kotlinx.coroutines.play.services
+    implementation libs.androidx.fragment.ktx
+    implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.navigation.ui.ktx
+    implementation libs.google.material
+    implementation libs.thebluealliance.spectrum
+    implementation libs.markdownedittext
+    implementation libs.markwon.core
+    implementation libs.markwon.ext.strikethrough
+    implementation libs.markwon.ext.tasklist
+    implementation libs.recyclerview.animator
 }
