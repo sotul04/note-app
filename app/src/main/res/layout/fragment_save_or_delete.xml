@@ -102,6 +102,22 @@
                     android:inputType="none"
                     tools:ignore="HardcodedText" />
 
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:background="@null"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/etCategory"
+                    android:textSize="15sp"
+                    android:importantForAutofill="no"
+                    android:fontFamily="@font/google_sans_regular"
+                    android:hint="Note category"
+                    android:inputType="none"
+                    tools:ignore="HardcodedText" />
+
                 <com.yahiaangelo.markdownedittext.MarkdownEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
