@@ -86,7 +86,8 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:paddingBottom="5dp"
         android:paddingEnd="6dp"
-        android:transitionGroup="true">
+        android:transitionGroup="true"
+        tools:listitem="@layout/note_layout_item">
     </androidx.recyclerview.widget.RecyclerView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -129,10 +130,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:id="@+id/inner_fab"
+            android:contentDescription="@string/add_note"
             android:src="@drawable/baseline_add_24"
             android:backgroundTint="@color/black"
             android:elevation="0dp"
-            android:tint="@color/white"
+            app:tint="@color/white"
             app:fabSize="normal"
             app:useCompatPadding="false"
             app:borderWidth="0dp"/>

@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Use an AppCompat theme as the parent -->
-    <style name="Theme.Noteapp" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.Noteapp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Customize your theme here if needed -->
     </style>
 </resources>
