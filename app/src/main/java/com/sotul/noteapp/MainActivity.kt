@@ -21,17 +21,12 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-        try {
-            setContentView(binding.root)
+        setContentView(binding.root)
 
-            val noteRepository = NoteRepository(NoteDatabase(this))
-            val noteViewModelFactory = NoteViewModelFactory(noteRepository)
+        val noteRepository = NoteRepository(NoteDatabase(this))
+        val noteViewModelFactory = NoteViewModelFactory(application ,noteRepository)
 
-            noteViewModel = ViewModelProvider(this, noteViewModelFactory)[NoteViewModel::class.java]
-
-        } catch (e: Exception) {
-            Log.d("TAG", "Error")
-        }
+        noteViewModel = ViewModelProvider(this, noteViewModelFactory)[NoteViewModel::class.java]
 
     }
 }
