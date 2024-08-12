@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/noteContentFragmentParent"
-    tools:context=".fragments.SaveOrDeleteFragment">
+    tools:context=".fragments.SaveOrUpdateFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -48,21 +48,36 @@
             android:textAlignment="center"
             tools:ignore="HardcodedText" />
 
-        <ImageView
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/saveNote"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/search_here"
-            android:focusable="true"
-            android:clickable="true"
-            android:paddingBottom="5dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/baseline_save_24"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="15dp"
-            app:tint="@color/black"
-            />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_alignParentEnd="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/search_here"
+                android:focusable="true"
+                android:clickable="true"
+                android:src="@drawable/baseline_save_24"
+                app:tint="@color/black"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="save"
+                android:textColor="@color/black"
+                android:layout_marginEnd="10dp"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+
 
 
 
@@ -71,7 +86,6 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottomBar"
         android:layout_below="@+id/toolBarFragmentNoteContent"
         >
 
@@ -86,52 +100,83 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                >
+                tools:ignore="HardcodedText">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Title"
+                    android:layout_marginStart="20dp"
+                    android:textSize="22sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/google_sans_medium"/>
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:background="@null"
-                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
                     android:layout_marginBottom="10dp"
                     android:id="@+id/etTitle"
                     android:textSize="22sp"
                     android:importantForAutofill="no"
                     android:fontFamily="@font/google_sans_medium"
-                    android:hint="Note title"
+                    android:hint="Enter title..."
                     android:inputType="none"
                     tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Category"
+                    android:layout_marginStart="22dp"
+                    android:paddingStart="10dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/google_sans_regular"
+                    tools:ignore="RtlSymmetry" />
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginStart="22dp"
+                    android:paddingStart="10dp"
                     android:background="@null"
-                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
                     android:layout_marginBottom="10dp"
                     android:id="@+id/etCategory"
                     android:textSize="15sp"
                     android:importantForAutofill="no"
                     android:fontFamily="@font/google_sans_regular"
-                    android:hint="Note category"
+                    android:hint="Enter category..."
                     android:inputType="none"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText,RtlSymmetry" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Note"
+                    android:layout_marginStart="22dp"
+                    android:paddingStart="10dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/google_sans_medium"
+                    tools:ignore="RtlSymmetry" />
 
                 <com.yahiaangelo.markdownedittext.MarkdownEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:shadowRadius="@integer/material_motion_duration_short_1"
                     android:layout_marginStart="22dp"
                     android:layout_marginEnd="22dp"
-                    android:layout_marginTop="10dp"
                     android:background="@null"
                     android:fontFamily="@font/google_sans_regular"
-                    android:hint="Note"
+                    android:hint="Enter note..."
                     android:importantForAutofill="no"
                     android:inputType="none"
-                    android:padding="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingEnd="10dp"
                     android:textSize="16sp"
                     android:id="@+id/etNoteContent"
                     tools:ignore="HardcodedText" />
@@ -154,25 +199,5 @@
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
     </FrameLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:id="@+id/bottomBar"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        android:layout_alignParentBottom="true"
-        >
-
-        <com.yahiaangelo.markdownedittext.MarkdownStylesBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/styleBar"
-            android:elevation="5dp"
-            />
-
-
-    </LinearLayout>
 
 </RelativeLayout>

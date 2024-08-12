@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.sotul.noteapp"
-        minSdk 24
+        minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -92,4 +92,8 @@ dependencies {
     implementation libs.markwon.ext.strikethrough
     implementation libs.markwon.ext.tasklist
     implementation libs.recyclerview.animator
+
+    implementation libs.poi.v523
+    implementation libs.poi.ooxml.v523
+//    implementation libs.poi.ooxml.schemas
 }

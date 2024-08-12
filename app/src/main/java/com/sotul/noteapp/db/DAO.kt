@@ -1,6 +1,5 @@
 package com.sotul.noteapp.db
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
@@ -40,5 +39,10 @@ interface DAO {
         )
         updateNote(newNote)
     }
+
+    @Query("SELECT * FROM note")
+    suspend fun getAll(): List<Note>
+
+    suspend fun importNote(note: Note) = insertNote(note)
 
 }

@@ -12,6 +12,8 @@ composeBom = "2024.06.00"
 # addition
 legacySupportV4 = "1.0.0"
 ksp = "1.9.0-1.0.13"
+poiOoxml = "5.2.3"
+poiVersion = "5.2.3"
 room = "2.6.1"
 recyclerView = "1.3.2"
 lifecycleExtensions = "2.2.0"
@@ -23,6 +25,7 @@ spectrum = "0.7.1"
 markdownEditText = "1.1.3"
 markwon = "4.6.1"
 recyclerViewAnimator = "4.0.2"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -57,6 +60,8 @@ androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", ve
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
 google-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+poi-ooxml-v523 = { module = "org.apache.poi:poi-ooxml", version.ref = "poiOoxml" }
+poi-v523 = { module = "org.apache.poi:poi", version.ref = "poiVersion" }
 thebluealliance-spectrum = { group = "com.thebluealliance", name = "spectrum", version.ref = "spectrum" }
 markdownedittext = { group = "io.github.yahiaangelo.markdownedittext", name = "markdownedittext", version.ref = "markdownEditText" }
 markwon-core = { group = "io.noties.markwon", name = "core", version.ref = "markwon" }

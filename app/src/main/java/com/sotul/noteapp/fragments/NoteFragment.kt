@@ -5,19 +5,17 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -31,6 +29,7 @@ import com.sotul.noteapp.databinding.FragmentNoteBinding
 import com.sotul.noteapp.utils.SwipeDelete
 import com.sotul.noteapp.utils.hideKeyboard
 import com.sotul.noteapp.viewmodel.NoteViewModel
+import com.sotul.noteapp.viewmodel.StateViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -39,16 +38,18 @@ import java.util.concurrent.TimeUnit
 
 class NoteFragment : Fragment(R.layout.fragment_note) {
 
-    private lateinit var noteBinding: FragmentNoteBinding
-    private val noteViewModel: NoteViewModel by activityViewModels()
+    private var _binding: FragmentNoteBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var  noteViewModel: NoteViewModel
     private lateinit var noteAdapter: NoteAdapter
+    private val stateViewModel: StateViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
-        noteBinding = FragmentNoteBinding.inflate(
+        _binding = FragmentNoteBinding.inflate(
             inflater,
             container,
             false
@@ -61,14 +62,18 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
             duration=350
         }
 
-        return noteBinding.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val activity = activity as MainActivity
         val navController = Navigation.findNavController(view)
         requireView().hideKeyboard()
+
+        noteViewModel = (activity as MainActivity).noteViewModel
+        
         CoroutineScope(Dispatchers.Main).launch {
             delay(10)
             activity.window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -76,23 +81,28 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
             activity.window.statusBarColor= Color.parseColor("#9E9D9D")
         }
 
-        noteBinding.fabAddNote.setOnClickListener {
-            noteBinding.appBarLayout.visibility = View.INVISIBLE
-            navController.navigate(NoteFragmentDirections.actionNoteFragmentToSaveOrDeleteFragment())
+        binding.fabAddNote.setOnClickListener {
+            binding.appBarLayout.visibility = View.INVISIBLE
+            navController.navigate(NoteFragmentDirections.actionNoteFragmentToSaveOrUpdateFragment())
         }
 
-        noteBinding.innerFab.setOnClickListener {
-            noteBinding.appBarLayout.visibility = View.INVISIBLE
-            navController.navigate(NoteFragmentDirections.actionNoteFragmentToSaveOrDeleteFragment())
+        binding.innerFab.setOnClickListener {
+            binding.appBarLayout.visibility = View.INVISIBLE
+            navController.navigate(NoteFragmentDirections.actionNoteFragmentToSaveOrUpdateFragment())
+        }
+
+        binding.fabSetting.setOnClickListener {
+            binding.appBarLayout.visibility = View.INVISIBLE
+            navController.navigate(NoteFragmentDirections.actionNoteFragmentToSettingFragment())
         }
 
         recyclerViewDisplay()
 
-        swipeDelete(noteBinding.rvNote)
+        swipeDelete(binding.rvNote)
 
-        noteBinding.search.addTextChangedListener (object : TextWatcher{
+        binding.search.addTextChangedListener (object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                noteBinding.noData.isVisible = false
+                binding.noData.isVisible = false
             }
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -107,7 +117,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
         })
 
-        noteBinding.search.setOnEditorActionListener { v, actionId, _ ->
+        binding.search.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 v.clearFocus()
                 requireView().hideKeyboard()
@@ -115,17 +125,20 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
             return@setOnEditorActionListener true
         }
 
-        noteBinding.rvNote.setOnScrollChangeListener { _, scrollX, scrollY, _, oldScrollY ->
+        binding.rvNote.setOnScrollChangeListener { _, scrollX, scrollY, _, oldScrollY ->
 
             when{
                 scrollY > oldScrollY -> {
-                    noteBinding.chatFabText.isVisible = false
+                    binding.chatFabText.isVisible = false
+                    binding.fabSetting.visibility = View.GONE
                 }
                 scrollX == scrollY -> {
-                    noteBinding.chatFabText.isVisible = true
+                    binding.chatFabText.isVisible = true
+                    binding.fabSetting.visibility = View.VISIBLE
                 }
                 else -> {
-                    noteBinding.chatFabText.isVisible = true
+                    binding.chatFabText.isVisible = true
+                    binding.fabSetting.visibility = View.VISIBLE
                 }
             }
 
@@ -140,11 +153,11 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
                 val note = noteAdapter.currentList[position]
                 var actionBtnTapped = false
                 noteViewModel.deleteNote(note)
-                noteBinding.search.apply {
+                binding.search.apply {
                     hideKeyboard()
                     clearFocus()
                 }
-                if (noteBinding.search.text.toString().isEmpty()) {
+                if (binding.search.text.toString().isEmpty()) {
                     observeDataChanges()
                 }
                 val snackbar = Snackbar.make(
@@ -159,7 +172,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
                         transientBottomBar?.setAction("UNDO") {
                             noteViewModel.addNote(note)
                             actionBtnTapped = true
-                            noteBinding.noData.isVisible = false
+                            binding.noData.isVisible = false
                         }
                         super.onShown(transientBottomBar)
                     }
@@ -182,7 +195,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     private fun observeDataChanges() {
         noteViewModel.getAllNotes().observe(viewLifecycleOwner) { list ->
-            noteBinding.noData.isVisible = list.isEmpty()
+            binding.noData.isVisible = list.isEmpty()
             noteAdapter.submitList(list)
         }
     }
@@ -195,7 +208,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
     }
 
     private fun setUpRecyclerView(spanCount: Int) {
-        noteBinding.rvNote.apply {
+        binding.rvNote.apply {
             layoutManager = StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL)
             setHasFixedSize(true)
             noteAdapter = NoteAdapter()
@@ -208,6 +221,11 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
             }
         }
         observeDataChanges()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

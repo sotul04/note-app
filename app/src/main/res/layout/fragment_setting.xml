@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.SettingFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="back"
+            android:padding="10dp"
+            android:src="@drawable/baseline_arrow_back_24"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/google_sans_medium"
+            android:gravity="center"
+            android:text="Setting"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/google_sans_medium"
+            android:gravity="center"
+            android:text="Sort Algorithm"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            tools:ignore="HardcodedText" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/sortAlgoModeSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:textOff="Merge"
+            android:textOn="Quick"
+            android:thumb="@drawable/thumb"
+            app:track="@drawable/track"
+            app:trackTint="@color/purple"
+            app:thumbTint="@color/blue"
+            app:showText="true"
+            app:switchTextAppearance="@style/TextAppearance.AppCompat.Subhead"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/google_sans_medium"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:text="String Matching"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            tools:ignore="HardcodedText" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/stringMatchingModeSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:clickable="true"
+            android:focusable="true"
+            android:textOff="KMP"
+            android:textOn="BM"
+            android:thumb="@drawable/thumb"
+            app:track="@drawable/track"
+            app:trackTint="@color/blue"
+            app:thumbTint="@color/purple"
+            app:showText="true"
+            app:switchTextAppearance="@style/TextAppearance.AppCompat.Subhead"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="10dp"
+        tools:ignore="HardcodedText">
+
+       <com.google.android.material.button.MaterialButton
+           android:id="@+id/exportXLSXBtn"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginStart="5dp"
+           android:layout_marginEnd="5sp"
+           android:elevation="5dp"
+           app:cornerRadius="10dp"
+           android:backgroundTint="@color/orangeRed"
+           android:text="Export xlsx"
+           android:textAllCaps="false"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/exportXLSBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5sp"
+            android:elevation="5dp"
+            app:cornerRadius="10dp"
+            android:backgroundTint="@color/card_purple"
+            android:textAllCaps="false"
+            android:text="Export xls"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/importBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5sp"
+            android:elevation="5dp"
+            app:cornerRadius="10dp"
+            android:backgroundTint="@color/primary"
+            android:textAllCaps="false"
+            android:text="Import"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

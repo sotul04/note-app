@@ -24,4 +24,11 @@ class NoteViewModel(val app: Application, private val repository: NoteRepository
         repository.deleteNote(note)
     }
 
+    suspend fun getAll() = repository.getAll()
+
+    fun importNotes(notes: List<Note>) = viewModelScope.launch {
+        notes.forEach{note ->
+            repository.importNote(note)
+        }
+    }
 }

@@ -13,4 +13,8 @@ class NoteRepository(private val db: NoteDatabase) {
 
     suspend fun deleteNote(note: Note) = db.getNoteDao().deleteNote(note)
 
+    suspend fun getAll() = db.getNoteDao().getAll()
+
+    suspend fun importNote(note: Note) = db.getNoteDao().importNote(note)
+
 }

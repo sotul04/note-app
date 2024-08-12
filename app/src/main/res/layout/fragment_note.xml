@@ -66,11 +66,7 @@
                         android:inputType="textFilter"
                         android:layout_weight="3" />
 
-
-
                 </LinearLayout>
-
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -112,6 +108,26 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        android:layout_margin="16dp"
+        android:id="@+id/fabSetting"
+        android:contentDescription="settings"
+        android:src="@drawable/baseline_settings_24"
+        app:borderWidth="0dp"
+        android:backgroundTint="@color/transparent"
+        android:outlineAmbientShadowColor="@color/transparent"
+        android:outlineSpotShadowColor="@color/transparent"
+        android:padding="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:tint="@color/gray"
+        app:fabSize="normal"
+        tools:ignore="HardcodedText"
+        tools:targetApi="p" />
 
     <LinearLayout
         android:layout_width="wrap_content"
