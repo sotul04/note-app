@@ -11,9 +11,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.ListAdapter
+import android.widget.Spinner
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -26,6 +33,7 @@ import com.sotul.noteapp.MainActivity
 import com.sotul.noteapp.R
 import com.sotul.noteapp.adapters.NoteAdapter
 import com.sotul.noteapp.databinding.FragmentNoteBinding
+import com.sotul.noteapp.model.Note
 import com.sotul.noteapp.utils.SwipeDelete
 import com.sotul.noteapp.utils.hideKeyboard
 import com.sotul.noteapp.viewmodel.NoteViewModel
@@ -43,6 +51,9 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
     private lateinit var  noteViewModel: NoteViewModel
     private lateinit var noteAdapter: NoteAdapter
     private val stateViewModel: StateViewModel by activityViewModels()
+
+    private var filterOption = mutableListOf("All")
+    private val sortMode = listOf("Default", "Title (A-Z)", "Title (Z-A)", "CreatedAt newer", "CreatedAt older", "UpdatedAt newer", "UpdatedAt older")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -91,7 +102,12 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
             navController.navigate(NoteFragmentDirections.actionNoteFragmentToSaveOrUpdateFragment())
         }
 
-        binding.fabSetting.setOnClickListener {
+        binding.settingTextFab.setOnClickListener {
+            binding.appBarLayout.visibility = View.INVISIBLE
+            navController.navigate(NoteFragmentDirections.actionNoteFragmentToSettingFragment())
+        }
+
+        binding.settingFab.setOnClickListener {
             binding.appBarLayout.visibility = View.INVISIBLE
             navController.navigate(NoteFragmentDirections.actionNoteFragmentToSettingFragment())
         }
@@ -130,19 +146,59 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
             when{
                 scrollY > oldScrollY -> {
                     binding.chatFabText.isVisible = false
-                    binding.fabSetting.visibility = View.GONE
+                    binding.settingTextFab.isVisible = false
                 }
                 scrollX == scrollY -> {
                     binding.chatFabText.isVisible = true
-                    binding.fabSetting.visibility = View.VISIBLE
+                    binding.settingTextFab.isVisible = true
                 }
                 else -> {
                     binding.chatFabText.isVisible = true
-                    binding.fabSetting.visibility = View.VISIBLE
+                    binding.settingTextFab.isVisible = false
+                }
+            }
+        }
+
+        setUpSpinnerListener()
+
+    }
+
+    private fun setUpSpinnerListener() {
+        lifecycleScope.launch {
+            val notes = noteViewModel.getAll()
+            val category = notes.map { it.category }.toSet()
+            filterOption.clear()
+            filterOption.add("All")
+            category.forEach { filterOption.add(it) }
+
+            val filterSpinner: Spinner = binding.filterSpinner
+            val filterAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, filterOption)
+            filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            filterSpinner.adapter = filterAdapter
+            filterSpinner.onItemSelectedListener = object : OnItemSelectedListener {
+                override fun onItemSelected(view: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
+                    val item = view!!.getItemAtPosition(position).toString()
+                    Toast.makeText(activity, "Selected filter: $item", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
                 }
             }
 
+            val sortModeSpinner: Spinner = binding.sortModeSpinner
+            val sortModeAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, sortMode)
+            sortModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            sortModeSpinner.adapter = sortModeAdapter
+            sortModeSpinner.onItemSelectedListener = object : OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    val selectedSortMode = sortMode[position]
+                    Toast.makeText(requireContext(), "Selected sort mode: $selectedSortMode", Toast.LENGTH_SHORT).show()
+                }
 
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+            }
         }
     }
 
@@ -151,7 +207,6 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.absoluteAdapterPosition
                 val note = noteAdapter.currentList[position]
-                var actionBtnTapped = false
                 noteViewModel.deleteNote(note)
                 binding.search.apply {
                     hideKeyboard()
@@ -171,7 +226,6 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
                     override fun onShown(transientBottomBar: Snackbar?) {
                         transientBottomBar?.setAction("UNDO") {
                             noteViewModel.addNote(note)
-                            actionBtnTapped = true
                             binding.noData.isVisible = false
                         }
                         super.onShown(transientBottomBar)

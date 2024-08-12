@@ -23,29 +23,31 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/app_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:id="@+id/app_title"
-                    android:fontFamily="@font/google_sans_bold"
-                    android:text="My Notes"
-                    android:textSize="30sp"
-                    android:textColor="@color/black"
-                    android:layout_marginTop="15dp"
-                    android:paddingTop="15dp"
                     android:layout_marginStart="2dp"
-                    tools:ignore="HardcodedText,MissingConstraints"/>
+                    android:fontFamily="@font/google_sans_bold"
+                    android:paddingTop="15dp"
+                    android:text="My Notes"
+                    android:textColor="@color/black"
+                    android:textSize="30sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/editTextContainer"
+                    tools:ignore="HardcodedText,MissingConstraints" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/filterContainer"
                     app:layout_constraintTop_toBottomOf="@id/app_title"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/editTextContainer"
                     android:layout_marginEnd="15dp">
 
                     <EditText
@@ -65,6 +67,74 @@
                         android:importantForAutofill="no"
                         android:inputType="textFilter"
                         android:layout_weight="3" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/filterContainer"
+                    android:baselineAligned="false"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextContainer"
+                    android:paddingEnd="18dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:orientation="horizontal"
+                    tools:ignore="MissingConstraints,RtlSymmetry">
+                    
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="filter by category"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="5dp"
+                            android:textColor="@color/black"
+                            tools:ignore="HardcodedText" />
+
+                        <Spinner
+                            android:id="@+id/filterSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:popupElevation="5dp"
+                            android:layout_marginEnd="10dp"
+                            android:popupBackground="@drawable/spinner_style"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="sort by"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="5dp"
+                            android:textColor="@color/black"
+                            tools:ignore="HardcodedText" />
+
+                        <Spinner
+                            android:id="@+id/sortModeSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:popupElevation="5dp"
+                            android:layout_marginEnd="10dp"
+                            android:popupBackground="@drawable/spinner_style"
+                            />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -109,25 +179,53 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start|bottom"
-        android:layout_margin="16dp"
-        android:id="@+id/fabSetting"
-        android:contentDescription="settings"
-        android:src="@drawable/baseline_settings_24"
-        app:borderWidth="0dp"
-        android:backgroundTint="@color/transparent"
-        android:outlineAmbientShadowColor="@color/transparent"
-        android:outlineSpotShadowColor="@color/transparent"
-        android:padding="10dp"
-        android:clickable="true"
+        android:id="@+id/settingFabParent"
         android:focusable="true"
-        android:tint="@color/gray"
-        app:fabSize="normal"
-        tools:ignore="HardcodedText"
-        tools:targetApi="p" />
+        android:clickable="true"
+        android:animateLayoutChanges="true"
+        android:orientation="horizontal"
+        android:clipToPadding="false"
+        android:background="@drawable/fab_button_corner"
+        android:backgroundTint="@color/purple"
+        android:layout_margin="16dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/settingTextFab"
+            android:fontFamily="@font/google_sans_regular"
+            android:text="Setting"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
+            android:layout_marginEnd="-2dp"
+            android:textAllCaps="false"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+            tools:ignore="HardcodedText" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/settingFab"
+            android:contentDescription="@string/add_note"
+            android:src="@drawable/baseline_settings_24"
+            android:backgroundTint="@color/purple"
+            android:elevation="0dp"
+            android:outlineSpotShadowColor="@color/transparent"
+            android:outlineAmbientShadowColor="@color/transparent"
+            app:fabSize="mini"
+            android:tint="@color/gray"
+            app:useCompatPadding="false"
+            app:borderWidth="0dp"
+            tools:targetApi="p" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -151,12 +249,15 @@
             android:id="@+id/inner_fab"
             android:contentDescription="@string/add_note"
             android:src="@drawable/baseline_add_24"
+            android:outlineAmbientShadowColor="@color/transparent"
+            android:outlineSpotShadowColor="@color/transparent"
             android:backgroundTint="@color/black"
             android:elevation="0dp"
             app:tint="@color/white"
-            app:fabSize="normal"
+            app:fabSize="mini"
             app:useCompatPadding="false"
-            app:borderWidth="0dp"/>
+            app:borderWidth="0dp"
+            tools:targetApi="p" />
 
         <TextView
             android:layout_width="wrap_content"
