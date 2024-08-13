@@ -1,10 +1,12 @@
 package com.sotul.noteapp.fragments
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -35,7 +37,13 @@ import com.sotul.noteapp.adapters.NoteAdapter
 import com.sotul.noteapp.databinding.FragmentNoteBinding
 import com.sotul.noteapp.model.Note
 import com.sotul.noteapp.utils.SwipeDelete
+import com.sotul.noteapp.utils.filterNote
 import com.sotul.noteapp.utils.hideKeyboard
+import com.sotul.noteapp.utils.isContains
+import com.sotul.noteapp.utils.mergeSort
+import com.sotul.noteapp.utils.quickSort
+import com.sotul.noteapp.utils.searchNote
+import com.sotul.noteapp.utils.toDate
 import com.sotul.noteapp.viewmodel.NoteViewModel
 import com.sotul.noteapp.viewmodel.StateViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -52,8 +60,9 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
     private lateinit var noteAdapter: NoteAdapter
     private val stateViewModel: StateViewModel by activityViewModels()
 
-    private var filterOption = mutableListOf("All")
-    private val sortMode = listOf("Default", "Title (A-Z)", "Title (Z-A)", "CreatedAt newer", "CreatedAt older", "UpdatedAt newer", "UpdatedAt older")
+    private var searchQuery: String? = null
+    private var sortChosen: String? = null
+    private var filterChosen: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,7 +92,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
         val navController = Navigation.findNavController(view)
         requireView().hideKeyboard()
 
-        noteViewModel = (activity as MainActivity).noteViewModel
+        noteViewModel = activity.noteViewModel
         
         CoroutineScope(Dispatchers.Main).launch {
             delay(10)
@@ -122,13 +131,12 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
             }
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (s.toString().isNotEmpty()) {
-                    // search code
-                }
+                val query = s.toString().trim()
+                searchQuery = query.ifBlank { null }
+                notesChange()
             }
 
             override fun afterTextChanged(p0: Editable?) {
-                // do something for search
             }
 
         })
@@ -163,6 +171,24 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     }
 
+    private fun notesChange() {
+        noteViewModel.getAllNotes().observe(viewLifecycleOwner) {list ->
+            var filteringNotes = list.toMutableList()
+            if (searchQuery != null) {
+                filteringNotes = filteringNotes.searchNote(searchQuery!!, stateViewModel.stringMatchingMode.value!!)
+            }
+            if (filterChosen != null) {
+                filteringNotes = filteringNotes.filterNote(filterChosen!!)
+            }
+            if (sortChosen != null) {
+                val sortAlgo = stateViewModel.sortMode.value!!
+                if (sortAlgo == StateViewModel.SORT_MODE_MERGE) filteringNotes.mergeSort(NOTE_COMPARATOR[sortChosen]!!)
+                else filteringNotes.quickSort(comparator =  NOTE_COMPARATOR[sortChosen]!!)
+            }
+            noteAdapter.submitList(filteringNotes)
+        }
+    }
+
     private fun setUpSpinnerListener() {
         lifecycleScope.launch {
             val notes = noteViewModel.getAll()
@@ -177,8 +203,9 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
             filterSpinner.adapter = filterAdapter
             filterSpinner.onItemSelectedListener = object : OnItemSelectedListener {
                 override fun onItemSelected(view: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                    val item = view!!.getItemAtPosition(position).toString()
-                    Toast.makeText(activity, "Selected filter: $item", Toast.LENGTH_SHORT).show()
+                    filterChosen = if (position != 0) filterOption[position]
+                    else null
+                    notesChange()
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -191,8 +218,9 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
             sortModeSpinner.adapter = sortModeAdapter
             sortModeSpinner.onItemSelectedListener = object : OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    val selectedSortMode = sortMode[position]
-                    Toast.makeText(requireContext(), "Selected sort mode: $selectedSortMode", Toast.LENGTH_SHORT).show()
+                    sortChosen = if (position != 0) sortMode[position]
+                    else null
+                    notesChange()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -220,7 +248,6 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
                 ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                         super.onDismissed(transientBottomBar, event)
-
                     }
 
                     override fun onShown(transientBottomBar: Snackbar?) {
@@ -254,6 +281,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
         }
     }
 
+    @SuppressLint("SwitchIntDef")
     private fun recyclerViewDisplay() {
         when (resources.configuration.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> setUpRecyclerView(2)
@@ -280,6 +308,19 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    companion object {
+        val NOTE_COMPARATOR = mapOf<String, Comparator<Note>>(
+            "Title (A-Z)" to compareBy { it.title },
+            "Title (Z-A)" to compareByDescending { it.title },
+            "CreatedAt newer" to compareByDescending { it.createdAt.toDate() },
+            "CreatedAt older" to compareBy { it.createdAt.toDate() },
+            "UpdatedAt newer" to compareByDescending { it.updatedAt.toDate() },
+            "UpdatedAt older" to compareBy { it.updatedAt.toDate() }
+        )
+        val sortMode = listOf("Default", "Title (A-Z)", "Title (Z-A)", "CreatedAt newer", "CreatedAt older", "UpdatedAt newer", "UpdatedAt older")
+        private var filterOption = mutableListOf("All")
     }
 
 }

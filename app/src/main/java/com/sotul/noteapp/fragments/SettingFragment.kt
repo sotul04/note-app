@@ -75,7 +75,7 @@ class SettingFragment : Fragment() {
         }
 
         binding.backButton.setOnClickListener {
-            view.findNavController().popBackStack()
+            view.findNavController().navigate(SettingFragmentDirections.actionSettingFragmentToNoteFragment())
         }
 
         binding.importBtn.setOnClickListener {

@@ -77,7 +77,7 @@ class SaveOrUpdateFragment : Fragment(R.layout.fragment_save_or_update) {
 
         binding.backButton.setOnClickListener {
             requireView().hideKeyboard()
-            view.findNavController().popBackStack()
+            view.findNavController().navigate(SaveOrUpdateFragmentDirections.actionSaveOrUpdateFragmentToNoteFragment())
         }
 
         binding.saveNote.setOnClickListener {
