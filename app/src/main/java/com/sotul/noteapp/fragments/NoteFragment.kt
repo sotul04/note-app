@@ -186,6 +186,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
                 else filteringNotes.quickSort(comparator =  NOTE_COMPARATOR[sortChosen]!!)
             }
             noteAdapter.submitList(filteringNotes)
+            binding.noData.isVisible = filteringNotes.isEmpty()
         }
     }
 
